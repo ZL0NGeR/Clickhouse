@@ -1,0 +1,18 @@
+SELECT 
+      toDate(BuyDate) - registr_data AS Datt  
+    , uniqExact(UserID) AS count_user
+FROM checks AS l 
+LEFT JOIN
+(
+SELECT 
+      UserID
+    , MIN(CAST(BuyDate AS Date)) AS registr_data
+FROM checks
+GROUP BY UserID
+) AS r
+ON l.UserID = r.UserID
+
+WHERE toDate(BuyDate) <= registr_data + 7
+GROUP BY Datt
+ORDER BY Datt
+LIMIT 10
