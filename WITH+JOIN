@@ -1,0 +1,24 @@
+WITH
+    (SELECT MAX(toStartOfMonth(CAST(BuyDate AS Date))) FROM checks) AS last_month
+
+SELECT 
+      two.UserID AS UserID
+    , one.DeviceID AS DevicesID
+    , three.AppPlatform AS AppPlatform 
+    , four.Source AS Source 
+    , MAX(CAST(two.BuyDate AS Date)) AS Datee
+
+FROM devices AS one
+JOIN checks AS two
+    ON one.UserID = two.UserID
+JOIN events AS three  
+    ON one.DeviceID = three.DeviceID
+JOIN installs AS four
+    ON three.DeviceID = four.DeviceID
+    
+WHERE four.Source == 'Source_9' and CAST(two.BuyDate AS Date) == last_month
+
+GROUP BY UserID, DevicesID, AppPlatform, Source
+ORDER BY Datee DESC  
+
+LIMIT 10
